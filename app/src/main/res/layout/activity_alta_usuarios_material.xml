@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".AltaUsuarios">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!--<FrameLayout-->
+            <!--android:id="@+id/frame"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/status_bar_height"-->
+            <!--android:background="?colorPrimaryDark" />-->
+
+
+        <android.support.v7.widget.Toolbar
+
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+
+            android:background="?colorPrimary"
+            android:elevation="4dp"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ToolbarTheme" />
+
+        //MODIFICACIONES PARA MATERIAL DESING---CUIDADO PORQUE TIENE UN ALTO COSTE EN EL RENDIMIENTO------------//
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/nombreWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="@dimen/abc_edit_text_inset_top_material"
+            android:theme="@style/TextLabel">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/nombre"
+            android:layout_width="@dimen/abc_search_view_preferred_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+
+            android:hint="@string/Name"
+            android:inputType="textCapSentences"
+
+            />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/apellidosWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginLeft="35dp"
+            android:layout_below="@+id/nombreWrapper"
+            android:theme="@style/TextLabel">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/apellidos"
+            android:layout_width="@dimen/abc_panel_menu_list_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+
+            android:inputType="textCapSentences"
+            android:hint="@string/Apell"
+
+            />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/direcWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextLabel"
+            android:layout_marginLeft="10dp"
+            android:paddingLeft="5dp"
+            android:layout_marginTop="15dp"
+            android:layout_below="@+id/apellidosWrapper">
+
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/direc"
+            android:layout_width="@dimen/abc_search_view_preferred_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/apellidosWrapper"
+
+
+            android:hint="@string/Adress"
+            android:inputType="textCapSentences" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/telefonoWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextLabel"
+            android:layout_marginLeft="10dp"
+            android:paddingLeft="5dp"
+            android:layout_marginTop="15dp"
+            android:layout_below="@+id/direcWrapper">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/telefono"
+            android:layout_width="@dimen/abc_search_view_text_min_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/direcWrapper"
+            android:hint="@string/Telephone"
+            android:inputType="phone"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/emailWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextLabel"
+            android:layout_marginLeft="10dp"
+            android:paddingLeft="5dp"
+            android:layout_marginTop="15dp"
+            android:layout_below="@+id/telefonoWrapper">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/email"
+            android:layout_width="@dimen/abc_panel_menu_list_width"
+
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/telefonoWrapper"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress" />
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:id="@+id/t_tipo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/emailWrapper"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="5dp"
+            android:textSize="17dp"
+            android:hint="@string/categoria"
+            android:layout_marginLeft="10dp"
+
+            />
+
+
+        <RadioGroup
+            android:id="@+id/radioGroup1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/t_tipo"
+            android:layout_below="@+id/t_tipo"
+            android:paddingLeft="5dp"
+            android:layout_marginLeft="10dp"
+            >
+
+            <RadioButton
+                android:id="@+id/radio1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/categoria1"
+                />
+
+            <RadioButton
+                android:id="@+id/radio2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/categoria2" />
+
+            <RadioButton
+                android:id="@+id/radio3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/categoria3" />
+
+            <RadioButton
+                android:id="@+id/radio4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/categoria4" />
+
+
+
+        </RadioGroup>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/observacionesWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextLabel"
+            android:paddingLeft="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/radioGroup1">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/observaciones"
+            android:layout_width="@dimen/abc_search_view_preferred_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/radioGroup1"
+            android:layout_marginLeft="10dp"
+
+            android:hint="@string/Observaciones"
+
+            android:inputType="textCapSentences|textMultiLine"
+            />
+
+        </android.support.design.widget.TextInputLayout>
+
+
+    </RelativeLayout>
+
+</ScrollView>

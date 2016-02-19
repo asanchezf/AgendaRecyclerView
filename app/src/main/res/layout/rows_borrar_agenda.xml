@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="right"
+    android:padding="5dp"
+    android:descendantFocusability="blocksDescendants">
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+
+        android:focusable="false"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/text1"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/checkBox"
+        android:textAppearance="@android:style/TextAppearance.Holo.Large"
+        android:textStyle="bold"
+        android:textSize="15dp"
+        android:focusable="false"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/text2"
+        android:layout_below="@+id/text1"
+        android:layout_toRightOf="@+id/checkBox"
+        android:layout_alignParentBottom="true"
+        android:focusable="false"/>
+
+    <TextView
+        android:id="@+id/text3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/text1"
+        android:layout_alignParentRight="true"
+        android:text="Sin categoría"
+        android:textStyle="italic"
+        android:focusable="false"
+        />
+
+    <TextView
+        android:id="@+id/text4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/text2"
+        android:layout_alignBottom="@+id/text2"
+        android:layout_alignParentRight="true"
+        android:layout_alignRight="@+id/text3"
+        android:layout_marginLeft="2dp"
+        android:text="TextView"
+        android:textStyle="italic"
+        android:focusable="false"/>
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_alignBottom="@+id/text2"
+        android:layout_toLeftOf="@+id/text4"
+        android:src="@drawable/telef_blue"
+        android:focusable="false"/>
+
+</RelativeLayout>

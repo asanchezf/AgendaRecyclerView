@@ -1,0 +1,37 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.antonymail.agenda.AltaUsuarios"
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        yourapp:showAsAction="never"
+        android:title="@string/action_settings"/>
+
+    <item
+        android:visible="false"
+        android:id="@+id/nuevo_usuario"
+        android:orderInCategory="100"
+        yourapp:showAsAction="always"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="@string/menu_crear_cliente"/>
+
+
+    <item
+        android:visible="false"
+        android:id="@+id/modificar_usuario"
+        android:orderInCategory="100"
+        yourapp:showAsAction="always"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="@string/menu_editar"/>
+
+    <item
+        android:visible="false"
+        android:id="@+id/eliminar_usuario"
+        android:orderInCategory="100"
+        yourapp:showAsAction="always"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="@string/menu_eliminar"/>
+
+</menu>

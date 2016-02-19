@@ -1,0 +1,40 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#FF5722</item>
+        <item name="colorPrimaryDark">#E64A19</item>
+        <item name="colorAccent">#795548</item>
+        <item name="android:textColorPrimary">#212121</item>
+        <item name="android:textColorSecondary">#727272</item>
+
+    </style>
+
+
+
+    <!-- Estilo para la toolbar-->
+    <style name="ToolbarTheme" parent="AppTheme">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+
+    </style>
+
+    <style name="CardViewTheme" parent="TextAppearance.AppCompat">
+        <item name="android:textColorPrimary">#5d4037</item>
+        <item name="android:textColorSecondary">#8d6e63</item>
+    </style>
+
+    <!-- Se utiliza en los controles InputTextLabel del alta de usuarios.-->
+    <style name="TextLabel" parent="TextAppearance.AppCompat">
+        <item name="android:textColorHint">@color/md_disabled_hint_text</item>
+
+        <item name="android:textColorPrimary">#5d4037</item>
+        <item name="android:textColorSecondary">#8d6e63</item>
+        <item name="android:textSize">17dp</item>
+
+        <item name="colorAccent">@color/md_red_400</item>
+        <item name="colorControlNormal">#8d6e63</item>
+        <item name="colorControlActivated">#5d4037</item>
+    </style>
+
+
+</resources>
