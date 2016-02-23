@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
     //FIN CONSTANTES==============================================================================
 
     private RecyclerView lista;
-    private int index;//Para preservar el scroll del RecyclerView
 
     private AdaptadorRecyclerView3 adaptador;
     private FloatingActionButton btnFab;
@@ -53,6 +52,11 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
     private ArrayList<Contactos> contactos;
 
     private static long back_pressed;//Contador para cerrar la app al pulsar dos veces seguidas el btón de cerrar. Se gestiona en el evento onBackPressed
+
+    private static int index = -1;
+    private static int top = -1;
+    private LinearLayoutManager llmanager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,11 +71,15 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
         // Configuración del RecyclerView-----------------------------
         lista = (RecyclerView) findViewById(R.id.lstLista);
-        lista.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));//Layout para el RecyclerView
-//        LinearLayoutManager llmanager = new LinearLayoutManager(this);
-//        llmanager.setOrientation(LinearLayoutManager.VERTICAL);
-//        lista.setLayoutManager(llmanager);
-        //Llamamos al método que trae los datos...
+
+        //lista.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));//Layout para el RecyclerView
+
+        llmanager = new LinearLayoutManager(this);
+        llmanager.setOrientation(LinearLayoutManager.VERTICAL);
+        lista.setLayoutManager(llmanager);
+
+
+
 
 
         consultar();
@@ -108,39 +116,42 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
     }
 
 
-/*    @Override
+   @Override
     protected void onResume() {
         super.onResume();
 
-//        //Para preserver el scroll del listview
-        if(lista != null) {
-            if (lista.getChildCount() > index)
-                lista.getLayoutManager().scrollToPosition(index);
-            else
-                lista.getLayoutManager().scrollToPosition(0);
-        }
-//
-//        linearLayoutManager.scrollToPositionWithOffset(2, 20);
-//        lista.getLayoutManager().scrollToPosition(index);
+       //Para preserver el scroll del listView
+       //Establecer variables en onCreate (), guardar posición en onPause () y ajuste la posición de desplazamiento desplazarse en onResume ()
+        if(index != -1) { llmanager.scrollToPositionWithOffset( index, top); }
+
 
     }
 
     @Override
     protected void onPause() {
-    	*//*
-    	 * Indica que la actividad est� a punto de ser lanzada a segundo plano, normalmente porque otra actividad es lanzada.
-    	 * Es el lugar adecuado para detener animaciones, m�sica o almacenar los datos que estaban en edici�n.
-    	 *
-    	 * *//*
-        //mp.stop();
+
+//    	 Indica que la actividad est� a punto de ser lanzada a segundo plano, normalmente porque otra actividad es lanzada.
+//    	 Es el lugar adecuado para detener animaciones, m�sica o almacenar los datos que estaban en edici�n.
+
 
         //Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
         super.onPause();
 
 
-        //Para preserver el scroll del listView
-        index = lista.getChildCount(); // store index using shared preferences
-    }*/
+        //Para preserver el scroll del Recyclerview;
+        //Establecer variables en onCreate (), guardar posición en onPause () y ajuste la posición de desplazamiento desplazarse en onResume ()
+
+        index = llmanager.findFirstVisibleItemPosition();
+        View v = lista.getChildAt(0);
+        //top = (v == null) ? 0 : (v.getTop() - lista.getPaddingTop());
+
+        if(v == null){
+            top=0;
+        }
+        else{
+            top=v.getTop() - lista.getPaddingTop();
+        }
+    }
 
     private void consultar() {
 
