@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:padding="5dp"
     >
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="172dp"
+        android:layout_height="150dp"
         android:id="@+id/cv"
 
         card_view:cardCornerRadius="6dp"
         card_view:cardElevation="6dp"
         card_view:cardUseCompatPadding="true"
-        card_view:cardBackgroundColor="@color/md_brown_50"
-        >
 
+        >
+        <!--card_view:cardBackgroundColor="@color/md_brown_50"-->
 
         <RelativeLayout
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right"
+
             android:padding="5dp">
 
             <ImageView
                 android:id="@+id/category"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
-                android:padding="0dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:scaleType="fitXY"
                 android:src="@drawable/imgcontacto3"
+
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true" />
@@ -49,7 +49,7 @@
                 android:textStyle="bold"
                 android:textColor="#795548"
 
-                android:textSize="15dp"
+                android:textSize="15sp"
                 android:layout_alignTop="@+id/category"
                 android:layout_toRightOf="@+id/category"
                 android:layout_toEndOf="@+id/category"
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:text="New Text"
                 android:id="@+id/text2"
-                android:textColor="@color/md_orange_A400"
+                android:textColor="@color/md_orange_300"
                 android:maxLines="1"
                 android:layout_below="@+id/text1"
                 android:layout_toRightOf="@+id/category"
@@ -92,66 +92,93 @@
 
             <Button
                 android:id="@+id/btncontactar"
-                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:textColor="@color/md_brown_400"
                 android:layout_width="wrap_content"
-                android:layout_height="42dp"
+                android:layout_height="35dp"
                 android:text="CONTACTAR"
+                android:background="@drawable/redondea_boton"
+                android:textSize="11sp"
                 android:textStyle="bold"
-                android:padding="0dp"
-                android:layout_centerVertical="true"
-                android:layout_alignRight="@+id/text4"
-                android:layout_alignEnd="@+id/text4" />
+
+                android:layout_marginTop="53dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
 
             <TextView
-                android:layout_width="150dp"
-                android:layout_height="70dp"
+                android:id="@+id/txtobservaciones"
+                android:layout_width="155dp"
+                android:layout_height="75dp"
 
                 android:text="Observaciones"
                 android:textColor="#727272"
-                android:id="@+id/txtobservaciones"
+                android:gravity="left"
 
+                android:maxLines="3"
+                android:maxLength="80"
+                android:foreground="#ffffff"
                 android:layout_below="@+id/text2"
-                android:layout_toRightOf="@+id/category"
-                android:layout_alignRight="@+id/text2"
-                android:layout_alignEnd="@+id/text2"
-                android:layout_above="@+id/btnruta" />
+                android:layout_toRightOf="@+id/txtruta"
+                android:layout_toEndOf="@+id/txtruta"
+                android:layout_above="@+id/posicionamiento" />
 
-
-            <ImageView
-                android:id="@+id/posicionamiento"
-                android:layout_width="25dp"
-                android:layout_height="30dp"
-
-
-                android:src="@drawable/icono_ubicacion"
-
-                android:layout_below="@+id/txtobservaciones"
-                android:layout_alignLeft="@+id/btncontactar"
-                android:layout_alignStart="@+id/btncontactar" />
 
             <TextView
+                android:id="@+id/txtubicacion"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Ubicación"
                 android:textStyle="bold"
-                android:id="@+id/txtubicacion"
-                android:layout_alignBaseline="@+id/btnruta"
-                android:layout_alignBottom="@+id/btnruta"
+                android:textSize="15sp"
+
+                android:gravity="right"
+                android:layout_alignTop="@+id/mapa"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="42dp"
-                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
-                android:textStyle="bold"
-                android:padding="0dp"
-                android:text="Establecer ruta"
-                android:id="@+id/btnruta"
+            <ImageView
+
+                android:id="@+id/posicionamiento"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+
+                android:src="@drawable/icono_ubicacion"
+
                 android:layout_alignParentBottom="true"
-                android:layout_alignLeft="@+id/txtobservaciones"
-                android:layout_alignStart="@+id/txtobservaciones" />
+                android:layout_toLeftOf="@+id/txtubicacion"
+                android:layout_toStartOf="@+id/txtubicacion" />
+
+            <ImageView
+                android:id="@+id/imgruta"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icono_ruta"
+
+                android:layout_alignTop="@+id/txtruta"
+                android:layout_toLeftOf="@+id/txtruta"
+                android:layout_toStartOf="@+id/txtruta" />
+
+            <TextView
+                android:id="@+id/txtruta"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Ver Ruta"
+
+                android:textStyle="bold"
+                android:textSize="15sp"
+
+                android:layout_alignRight="@+id/category"
+                android:layout_alignEnd="@+id/category"
+                android:layout_alignTop="@+id/mapa" />
+
+            <ImageView
+                android:layout_width="85dp"
+                android:layout_height="20dp"
+                android:id="@+id/mapa"
+                android:src="@drawable/imgmapa"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true" />
 
 
         </RelativeLayout>

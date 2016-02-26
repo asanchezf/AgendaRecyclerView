@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:padding="5dp"
     >
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="137dp"
+        android:layout_height="155dp"
         android:id="@+id/cv"
 
         card_view:cardCornerRadius="6dp"
@@ -23,15 +23,16 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right"
+
             android:padding="5dp">
 
             <ImageView
                 android:id="@+id/category"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-
+                android:scaleType="fitXY"
                 android:src="@drawable/imgcontacto3"
+
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true" />
@@ -95,50 +96,98 @@
                 android:layout_width="wrap_content"
                 android:layout_height="42dp"
                 android:text="CONTACTAR"
-                android:layout_below="@+id/text2"
-                android:layout_alignRight="@+id/text4"
-                android:layout_alignEnd="@+id/text4"
+
+
                 android:textStyle="bold"
-                android:layout_marginRight="0dp"
+
                 android:padding="0dp"
-                />
+                android:gravity="right"
+                android:layout_above="@+id/imgruta"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
 
             <TextView
-                android:layout_width="150dp"
-                android:layout_height="70dp"
+                android:id="@+id/txtobservaciones"
+                android:layout_width="155dp"
+                android:layout_height="75dp"
 
                 android:text="Observaciones"
                 android:textColor="#727272"
-                android:id="@+id/txtobservaciones"
+                android:gravity="left"
 
-                android:layout_below="@+id/text2"
-                android:layout_toRightOf="@+id/category"
-                android:layout_toEndOf="@+id/category" />
+                android:maxLines="4"
 
 
-            <ImageView
-                android:id="@+id/posicionamiento"
-                android:layout_width="25dp"
-                android:layout_height="20dp"
+                android:layout_below="@+id/notas"
+                android:layout_alignRight="@+id/text1"
+                android:layout_alignEnd="@+id/text1"
+                android:maxLength="80"
+                android:foreground="#ffffff" />
 
-                android:src="@drawable/icono_ubicacion"
-
-                android:layout_below="@+id/btncontactar"
-                android:layout_toLeftOf="@+id/txtubicacion"
-                android:layout_toStartOf="@+id/txtubicacion" />
 
             <TextView
+                android:id="@+id/txtubicacion"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Ubicación"
                 android:textStyle="bold"
                 android:textSize="15sp"
-                android:id="@+id/txtubicacion"
-                android:layout_below="@+id/category"
-                android:layout_alignRight="@+id/btncontactar"
-                android:layout_alignEnd="@+id/btncontactar" />
 
+                android:layout_alignTop="@+id/posicionamiento"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:gravity="right"/>
+
+            <ImageView
+
+                       android:id="@+id/posicionamiento"
+                       android:layout_width="20dp"
+                       android:layout_height="20dp"
+
+                       android:src="@drawable/icono_ubicacion"
+                android:gravity="right"
+                android:layout_alignParentBottom="true"
+                android:layout_toLeftOf="@+id/text4"
+                android:layout_toStartOf="@+id/text4" />
+
+            <ImageView
+                              android:id="@+id/imgruta"
+                              android:layout_width="25dp"
+                              android:layout_height="20dp"
+                              android:src="@drawable/icono_ruta"
+                android:layout_alignParentBottom="true"
+                android:layout_alignLeft="@+id/category"
+                android:layout_alignStart="@+id/category"
+                android:gravity="left"/>
+
+            <TextView
+                              android:id="@+id/txtruta"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:textAppearance="?android:attr/textAppearanceSmall"
+                              android:text="Ver Ruta"
+
+                              android:textStyle="bold"
+                              android:textSize="15sp"
+                android:layout_alignBottom="@+id/imgruta"
+                android:layout_toRightOf="@+id/imgruta"
+                android:layout_toEndOf="@+id/imgruta"
+                android:gravity="left"/>
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="NOTAS:"
+                android:id="@+id/notas"
+                android:textStyle="bold"
+                android:gravity="right|center"
+                android:layout_below="@+id/text2"
+                android:layout_alignLeft="@+id/txtobservaciones"
+                android:layout_alignStart="@+id/txtobservaciones" />
 
         </RelativeLayout>
 

@@ -43,6 +43,8 @@ public class AdaptadorRecyclerView3 extends RecyclerView.Adapter<AdaptadorRecycl
         ImageView ubicacion;
         TextView txtUbicacion;
         //Button ruta;
+        TextView txtRuta;
+        ImageView ruta;
 
         public ContactosViewHolder(View v) {
             super(v);
@@ -57,13 +59,14 @@ public class AdaptadorRecyclerView3 extends RecyclerView.Adapter<AdaptadorRecycl
 
             ubicacion= (ImageView) v.findViewById(R.id.posicionamiento);
             txtUbicacion= (TextView) v.findViewById(R.id.txtubicacion);
-            //ruta=(Button)v.findViewById(R.id.btnruta);
-
+            ruta= (ImageView) v.findViewById(R.id.imgruta);
+            txtRuta= (TextView) v.findViewById(R.id.txtruta);
             v.setOnClickListener(this);
             categoria.setOnClickListener(this);
             contactar.setOnClickListener(this);
 
             txtUbicacion.setOnClickListener(this);
+            txtRuta.setOnClickListener(this);
             //ruta.setOnClickListener(this);
 
 
@@ -116,7 +119,7 @@ public class AdaptadorRecyclerView3 extends RecyclerView.Adapter<AdaptadorRecycl
     public AdaptadorRecyclerView3.ContactosViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fila_recyclerview, parent,false);
+                .inflate(R.layout.fila_recyclerview2, parent,false);
 
 
         return new ContactosViewHolder(v);

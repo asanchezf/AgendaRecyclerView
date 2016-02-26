@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import Beans.Contactos;
 import controlador.SQLControlador;
@@ -300,6 +302,30 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
             startActivity(intent);*/
 
             try {
+                ubicar(idPromocion);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+        else if (view.getId() == R.id.txtruta) {
+            //
+            // Toast.makeText(MainActivity.this, "Se ha pulsado en ubicación: " + idPromocion + " " + holder, Toast.LENGTH_SHORT).show();
+
+            //NO FUNCIONA
+            /*Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                    Uri.parse("http://maps.google.com/maps?saddr=20.344,34.34&daddr=20.5666,45.345"));
+            startActivity(intent);*/
+
+
+            //INICIA NAVEGACIÓN DESDE LA UBICACIÓN ACTUAL A LA DIRECCIÓN INTRODUCIDA....
+       /*     Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                    Uri.parse("google.navigation:q=an+Mestizaje, 2+Alcorcon"));
+            startActivity(intent);*/
+
+            try {
                 visitar(idPromocion);
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -307,6 +333,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
 
         }
+
 
         //Pulsando en otra parte de los CardView distinta se abre la Activity para editar o eliminar el contacto
         else{
@@ -342,10 +369,68 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
         }
         else {
-            //Uri.parse("google.navigation:q=an+Mestizaje, 2+Alcorcon"));
-            Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                    Uri.parse("google.navigation:q=" + direccion));
-            startActivity(intent);
+
+
+            //Si el GPS no está habilitado
+            LocationManager locManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+            if (!locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                Snackbar snack = Snackbar.make(lista, R.string.agenda_gps_no_activado, Snackbar.LENGTH_LONG);
+                ViewGroup group = (ViewGroup) snack.getView();
+                group.setBackgroundColor(getResources().getColor(R.color.md_deep_orange_500));
+                snack.show();
+            }
+            else {
+                //Uri.parse("google.navigation:q=an+Mestizaje, 2+Alcorcon"));
+
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse("google.navigation:q=" + direccion));
+                startActivity(intent);
+            }
+
+        }
+    }
+
+
+    private void ubicar(int idPromocion) throws SQLException {
+
+        dbConnection = new SQLControlador(getApplicationContext());
+        dbConnection.abrirBaseDeDatos(1);// Lectura. Solo para ver
+
+        Cursor c = dbConnection.CursorBuscarUno(idPromocion);// Devuelve un Cursor
+
+        String direccion = c.getString(c.getColumnIndex("Direccion"));
+
+        dbConnection.cerrar();
+
+        if(direccion.equals("")){
+
+            //Toast.makeText(MainActivity.this,"Este contacto no tiene ninguna dirección asignada..!",Toast.LENGTH_LONG).show();
+
+            Snackbar snack = Snackbar.make(lista, R.string.agenda_contacto_sin_direccion, Snackbar.LENGTH_LONG);
+            ViewGroup group = (ViewGroup) snack.getView();
+            group.setBackgroundColor(getResources().getColor(R.color.md_deep_orange_500));
+            snack.show();
+
+        }
+        else {
+
+            //Si el GPS no está habilitado
+            LocationManager locManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+            if (!locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                Snackbar snack = Snackbar.make(lista, R.string.agenda_gps_no_activado, Snackbar.LENGTH_LONG);
+                ViewGroup group = (ViewGroup) snack.getView();
+                group.setBackgroundColor(getResources().getColor(R.color.md_deep_orange_500));
+                snack.show();
+            }
+
+            //El GPS está habilitado y el contacto tiene dirección asociada
+            else {
+
+                String uri = String.format(Locale.ENGLISH, "geo:0,0?q=" + direccion);
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                startActivity(intent);
+
+            }
         }
     }
 

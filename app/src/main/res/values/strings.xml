@@ -45,7 +45,7 @@
     <string name="agenda_salir">Pulse otra vez para salir</string>
     <string name="agenda_permiso_llamadas">Su terminal no tiene permiso para realizar llamadas</string>
     <string name="agenda_contacto_sin_direccion">Este contacto no tiene ninguna dirección asignada para que el gps de su terminal le dirija hacia ella.</string>
-
+    <string name="agenda_gps_no_activado">Su terminal no tiene activado al GPS para poder acceder a esta funcionalidad. Actívelo..</string>
     <string name="agenda_call_titulo">Llamada telefónica</string>
     <string name="agenda_eliminar_titulo">Eliminar contacto</string>
     <string name="agenda_eliminar_muchos_titulo">Eliminación masiva de contactos</string>

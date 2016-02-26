@@ -333,7 +333,7 @@ public class ImportarContactos extends AppCompatActivity {
 	                    String[] addrWhereParams = new String[]{id, ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE};
 
 	                    addrCur = cr.query(ContactsContract.Data.CONTENT_URI, null, addrWhere, addrWhereParams, null);
-
+                    direccion="";
 	                    while(addrCur.moveToNext()) {
 	                        String poBox = addrCur.getString(
 	                                     addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POBOX));
@@ -353,6 +353,7 @@ public class ImportarContactos extends AppCompatActivity {
 	                        //Recojemos calle y ciudad:
                             direccion=street+ " "+ city;
                             direcciones.add(direccion);
+
 	                    }
 	                    addrCur.close();
 
