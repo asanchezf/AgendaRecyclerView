@@ -96,7 +96,7 @@
 
 
             android:hint="@string/Adress"
-            android:inputType="textCapSentences" />
+            android:inputType="textPostalAddress" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -117,7 +117,11 @@
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/direcWrapper"
             android:hint="@string/Telephone"
-            android:inputType="phone"/>
+            android:inputType="number"
+            android:digits="01234567890 "
+            android:maxLength="13"/>
+
+            <!--android:inputType="phone"-->
 
         </android.support.design.widget.TextInputLayout>
 
@@ -133,7 +137,7 @@
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/email"
-            android:layout_width="@dimen/abc_panel_menu_list_width"
+            android:layout_width="296dp"
 
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -208,11 +212,12 @@
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/observaciones"
-            android:layout_width="@dimen/abc_search_view_preferred_width"
+            android:layout_width="290dp"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/radioGroup1"
             android:layout_marginLeft="10dp"
+
 
             android:hint="@string/Observaciones"
 
@@ -220,6 +225,22 @@
             />
 
         </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:id="@+id/texto_contador"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textStyle="bold"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+
+            android:layout_marginRight="33dp"
+            android:layout_marginEnd="33dp"
+
+
+            android:layout_alignBottom="@+id/observacionesWrapper"
+            android:layout_alignRight="@+id/observacionesWrapper"
+            android:layout_alignEnd="@+id/observacionesWrapper" />
 
 
     </RelativeLayout>

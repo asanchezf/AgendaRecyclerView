@@ -39,7 +39,7 @@
     <string name="agenda_editar_titulo">Editar contacto</string>
     <string name="agenda_editar_confirmacion">Contacto modificado</string>
 
-    <string name="agenda_crear_informacion">Se ha incluido en la agenda a</string>
+    <string name="agenda_crear_informacion">Se ha incluido en la agenda a %s</string>
     <string name="agenda_editar_informacion">Se ha modificado en la agenda a </string>
 
     <string name="agenda_salir">Pulse otra vez para salir</string>

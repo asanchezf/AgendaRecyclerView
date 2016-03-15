@@ -9,6 +9,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -16,6 +19,7 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.sql.SQLException;
@@ -157,6 +161,46 @@ public class AltaUsuarios extends AppCompatActivity {
         });*/
 
 
+        //Asignamos eventos al edittext observaciones para incluir contador de caracteres.
+        observaciones.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //Sacamos el número de caracteres en un textview
+                TextView contador = (TextView) findViewById(R.id.texto_contador);
+
+
+              /*String tamanoString = String.valueOf(s.length());
+              contador.setText(tamanoString);*/
+
+
+                //Establecemos  el maxlengt del control observaciones dinámicamente a 200 caracteres.
+                int maxLength = 200;
+                InputFilter[] fArray = new InputFilter[1];
+                fArray[0] = new InputFilter.LengthFilter(maxLength);
+                observaciones.setFilters(fArray);
+
+                //Restamos sobre 200 que es el maxlength de observaciones
+                int resta=maxLength-s.length();
+                String tamano=String.valueOf(resta);
+                contador.setText(tamano);
+
+
+
+            }
+        });
+
+
+
     }
 
 
@@ -287,6 +331,8 @@ public class AltaUsuarios extends AppCompatActivity {
                     Connection.abrirBaseDeDatos(2);
 
                     Connection.ModificarContacto(id_recogido, nom, apell, direccion, tele, correo, (int) Id_Categ, observa);
+
+                   // String alta=String.format((R.string.agenda_crear_informacion),nom);
                     Toast.makeText(getApplicationContext(), "Se ha modificado en la agenda a " + nom, Toast.LENGTH_SHORT).show();
                     Connection.cerrar();
                     setResult(RESULT_OK);
