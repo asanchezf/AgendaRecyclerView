@@ -73,18 +73,16 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
         // Configuración del RecyclerView-----------------------------
         lista = (RecyclerView) findViewById(R.id.lstLista);
-
-        //lista.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));//Layout para el RecyclerView
-
+        lista.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));//Layout para el RecyclerView
         llmanager = new LinearLayoutManager(this);
         llmanager.setOrientation(LinearLayoutManager.VERTICAL);
-        lista.setLayoutManager(llmanager);
-
-
-
 
 
         consultar();
+
+        //adaptador = new AdaptadorRecyclerView3(contactos, this, this);//IMplementa el adapatador: pasamos ahora tres parámetros....
+        //lista.setAdapter(adaptador);
+        //adaptador.notifyDataSetChanged();
 
 
         //Floating Action Button
@@ -171,7 +169,9 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
 
         adaptador = new AdaptadorRecyclerView3(contactos, this, this);//IMplementa el adapatador: pasamos ahora tres parámetros....
-        //lista.setAdapter(adaptador);
+
+        /*lista.setAdapter(adaptador);
+        adaptador.notifyDataSetChanged();*/
 
         //DECORACIÓN Y ANIMACIÓN DEL RECYCLERVIEWw. Se define en una clase aparte...
 
@@ -200,7 +200,9 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 //        }
 
         //lista.setAdapter(contactosAdapter_imagenes);
+
         lista.setAdapter(adaptador);
+
         dbConnection.cerrar();
     }
 

@@ -111,6 +111,9 @@ public class AdaptadorRecyclerView3 extends RecyclerView.Adapter<AdaptadorRecycl
         this.items = datos;
         this.escucha = escucha;
         this.contexto = contexto;
+
+
+
     }
 
 

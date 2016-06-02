@@ -379,8 +379,7 @@ public class SQLControlador {
 						rs.getString(5), rs.getInt(6), rs.getString(7), rs.getInt(8), rs.getInt(9));
 
 				arraList.add(contactos);
-
-			} while (rs.moveToNext());
+} while (rs.moveToNext());
 
 		}
 		return arraList;
