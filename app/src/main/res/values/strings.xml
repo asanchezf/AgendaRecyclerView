@@ -53,7 +53,7 @@
     <string name="agenda_eliminar_mensaje">¿Seguro que desea eliminar este contacto?</string>
     <string name="agenda_eliminar_muchos_mensaje">A continuación se va a proceder a eliminar el contacto o los clientes seleccionados</string>
     <string name="agenda_eliminar_todos_mensaje">¿Seguro que desea eliminar todos los contactos de la agenda?</string>
-    <string name="agenda_call_mensaje">¿Seguro que desea realizar una llamada al contacto seleccionado?</string>
+    <string name="agenda_call_mensaje">Se va a realizar una llamada al contacto seleccionado. ¿Desea continuar?</string>
 
     <string name="agenda_eliminar_confirmacion">Contacto eliminado</string>
     <string name="agenda_eliminar_todos_confirmacion">Se han eliminado todos los contactos de su agenda..!</string>

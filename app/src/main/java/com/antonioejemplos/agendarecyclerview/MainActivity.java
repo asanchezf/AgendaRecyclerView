@@ -14,9 +14,12 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -33,7 +36,9 @@ import java.util.Locale;
 import Beans.Contactos;
 import controlador.SQLControlador;
 
-public class MainActivity extends AppCompatActivity implements AdaptadorRecyclerView3.OnItemClickListener {
+import static android.widget.SearchView.OnQueryTextListener;
+
+public class MainActivity extends AppCompatActivity implements AdaptadorRecyclerViewSearch.OnItemClickListener, OnQueryTextListener,SearchView.OnQueryTextListener,MenuItemCompat.OnActionExpandListener {
 
 
     //CONSTANTES PARA EL MODO FORMULARIO Y PARA LOS TIPOS DE LLAMADA.============================
@@ -47,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
     private RecyclerView lista;
 
-    private AdaptadorRecyclerView3 adaptador;
+    //private AdaptadorRecyclerView3 adaptador;
+    private AdaptadorRecyclerViewSearch adaptadorBuscador;
     private FloatingActionButton btnFab;
     private CollapsingToolbarLayout ctlLayout;
     private SQLControlador dbConnection;//CONTIENE LAS CONEXIONES A BBDD (CREADA EN DBHELPER.CLASS) Y LOS M�TODOS INSERT, UPDATE, DELETE, BUSCAR....
@@ -58,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
     private static int index = -1;
     private static int top = -1;
     private LinearLayoutManager llmanager;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         // Configuración del RecyclerView-----------------------------
         lista = (RecyclerView) findViewById(R.id.lstLista);
         lista.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));//Layout para el RecyclerView
+
+        lista.setItemAnimator(new DefaultItemAnimator());//Animación por defecto....
         llmanager = new LinearLayoutManager(this);
         llmanager.setOrientation(LinearLayoutManager.VERTICAL);
 
@@ -168,7 +177,8 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         contactos = dbConnection.BuscarTodos();// llamamos a BuscarTodos() que devuelve un arraylist de contactos...
 
 
-        adaptador = new AdaptadorRecyclerView3(contactos, this, this);//IMplementa el adapatador: pasamos ahora tres parámetros....
+        //adaptador = new AdaptadorRecyclerView3(contactos, this, this);//IMplementa el adapatador: pasamos ahora tres parámetros....
+        adaptadorBuscador = new AdaptadorRecyclerViewSearch(contactos, this, this);//IMplementa el adapatador: pasamos ahora tres parámetros....
 
         /*lista.setAdapter(adaptador);
         adaptador.notifyDataSetChanged();*/
@@ -201,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
         //lista.setAdapter(contactosAdapter_imagenes);
 
-        lista.setAdapter(adaptador);
+        lista.setAdapter(adaptadorBuscador);
 
         dbConnection.cerrar();
     }
@@ -530,7 +540,52 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+
+        //SE IMPLEMENTA EL MENÚ BUSCAR. Se añaden a la clase dos interfaces y se implmenta sus métodos más abajo...
+
+
+
+
+        // MenuItem searchItem = menu.findItem(R.id.action_search);
+        MenuItem searchItem = menu.findItem(R.id.buscar);
+        //SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setQueryHint(getResources().getString(R.string.buscar_en_searchview));
+
+        //Personalizamos con color y tamaño de letra
+        SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchAutoComplete.setHintTextColor(getResources().getColor(android.R.color.white));
+        searchAutoComplete.setTextSize(16);
+
+
+        //searchView.setSubmitButtonEnabled(true);
+
+
+        searchView.setOnQueryTextListener(this);
+
+
+        // LISTENER PARA LA APERTURA Y CIERRE DEL WIDGET
+        //MenuItemCompat.setOnActionExpandListener(searchItem, this);
+        //FIN IMPLEMENTACION DEL MENU BUSCAR
+
+        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adaptadorBuscador.getFilter().filter(newText);
+                return false;
+            }
+        });*/
+
+
+
+        return super.onCreateOptionsMenu(menu);
+        //return true;
     }
 
     @Override
@@ -566,6 +621,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
             return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -612,5 +668,55 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
             Toast.makeText(getBaseContext(), R.string.agenda_salir, Toast.LENGTH_SHORT).show();
         back_pressed = System.currentTimeMillis();
        // super.onBackPressed();
+    }
+
+    /**
+     Para el buscador de la Toolbar
+     */
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    /**
+     Para el buscador de la Toolbar
+     */
+    @Override
+    public boolean onQueryTextChange(String newText) {
+
+        //Pasamos dos parámetros. Uno para el filtrado y otro para el cambio de color de letra
+        adaptadorBuscador.filter=newText;//Color de letra
+        adaptadorBuscador.getFilter().filter(newText);//filtrado
+
+        //AdaptadorRecyclerView3.getFilter().filter(newTextt);
+        return false;//se cambia a true
+    }
+
+    /**
+     * Called when a menu item with {@link #SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW}
+     * is expanded.
+     *
+     * @param item Item that was expanded
+     * @return true if the item should expand, false if expansion should be suppressed.
+     */
+    @Override
+    public boolean onMenuItemActionExpand(MenuItem item) {
+        return true;
+    }
+
+    /**
+     * Called when a menu item with {@link #SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW}
+     * is collapsed.
+     *
+     * @param item Item that was collapsed
+     * @return true if the item should collapse, false if collapsing should be suppressed.
+     */
+    @Override
+    public boolean onMenuItemActionCollapse(MenuItem item) {
+
+
+//consultar();
+
+        return false;//Se cambia el return a true
     }
 }

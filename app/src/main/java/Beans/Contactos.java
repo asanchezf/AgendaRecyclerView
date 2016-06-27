@@ -117,4 +117,40 @@ public class Contactos {
 	public void setSincronizado(int sincronizado) {
 		Sincronizado = sincronizado;
 	}
+
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Contactos contactos = (Contactos) o;
+
+		if (_id != contactos._id) return false;
+		if (Id_Categoria != contactos.Id_Categoria) return false;
+		if (Importado != contactos.Importado) return false;
+		if (Sincronizado != contactos.Sincronizado) return false;
+		if (!Nombre.equals(contactos.Nombre)) return false;
+		if (!Apellidos.equals(contactos.Apellidos)) return false;
+		if (!Direccion.equals(contactos.Direccion)) return false;
+		if (!Telefono.equals(contactos.Telefono)) return false;
+		if (!Email.equals(contactos.Email)) return false;
+		return Observaciones.equals(contactos.Observaciones);
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = (int) (_id ^ (_id >>> 32));
+		result = 31 * result + Nombre.hashCode();
+		result = 31 * result + Apellidos.hashCode();
+		result = 31 * result + Direccion.hashCode();
+		result = 31 * result + Telefono.hashCode();
+		result = 31 * result + Email.hashCode();
+		result = 31 * result + Id_Categoria;
+		result = 31 * result + Observaciones.hashCode();
+		result = 31 * result + Importado;
+		result = 31 * result + Sincronizado;
+		return result;
+	}
 }

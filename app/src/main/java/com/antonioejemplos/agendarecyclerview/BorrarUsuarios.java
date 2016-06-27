@@ -132,33 +132,50 @@ public class BorrarUsuarios extends AppCompatActivity {
                         ArrayList arrayListChequeados = new ArrayList();
                         arrayListChequeados = CustomArrayAdapter_2.checksseleccionados;//Nos devuelve un arraylist con los elementos seleccionados en los checks de la lista
 
-                        dbConnection = new SQLControlador(getApplicationContext());
-                        try {
-                            dbConnection.abrirBaseDeDatos(2);//Modo escritura para el delete
-                        } catch (SQLException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                        if (arrayListChequeados.size() > 0) {
+
+                            dbConnection = new SQLControlador(getApplicationContext());
+                            try {
+                                dbConnection.abrirBaseDeDatos(2);//Modo escritura para el delete
+                            } catch (SQLException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+
+                            dbConnection.borrarMuchos(arrayListChequeados);
+
+                            Toast.makeText(BorrarUsuarios.this,
+                                    R.string.agenda_eliminar_muchos_confirmacion,
+                                    Toast.LENGTH_SHORT).show();
+                            //dbConnection.cerrar();
+                            //consultarParaBorrar();
+                            dbConnection.cerrar();
+                            setResult(RESULT_OK);
+                            finish();
                         }
-
-                        dbConnection.borrarMuchos(arrayListChequeados);
-
-                        Toast.makeText(BorrarUsuarios.this,
-                                R.string.agenda_eliminar_muchos_confirmacion,
-                                Toast.LENGTH_SHORT).show();
-                        //dbConnection.cerrar();
-                        //consultarParaBorrar();
-                        dbConnection.cerrar();
-                        setResult(RESULT_OK);
-                        finish();
-
-                      /*  finish();
-                        Intent intent=new Intent(BorrarUsuarios.this, MainActivity.class);
-
-                        startActivity(intent);*/
                     }
                 });
 
-        dialogEliminar.setNegativeButton(android.R.string.no, null);
+        //dialogEliminar.setNegativeButton(android.R.string.no, null);
+
+        dialogEliminar.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            /**
+             * This method will be invoked when a button in the dialog is clicked.
+             *
+             * @param dialog The dialog that received the click.
+             * @param which  The button that was clicked (e.g.
+             *               {@link DialogInterface#BUTTON1}) or the position
+             */
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                finish();
+
+            }
+        });
+
+
+
 
         dialogEliminar.show();
 
