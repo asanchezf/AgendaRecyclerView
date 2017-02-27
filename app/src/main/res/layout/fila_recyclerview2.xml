@@ -115,7 +115,7 @@
 
                 android:maxLines="3"
                 android:maxLength="80"
-                android:foreground="#ffffff"
+
                 android:layout_below="@+id/text2"
                 android:layout_toRightOf="@+id/txtruta"
                 android:layout_toEndOf="@+id/txtruta"

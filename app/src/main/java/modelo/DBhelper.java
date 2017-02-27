@@ -12,7 +12,8 @@ public class DBhelper extends SQLiteOpenHelper {
 	private static String name = "Agenda.db";
 	private static CursorFactory factory = null;
 
-	private String sql = "CREATE TABLE Contactos (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+	private String sql = "CREATE TABLE Contactos (" +
+            "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
 			+ "Nombre TEXT NOT NULL, "
 			+ "Apellidos TEXT, "
 			+ "Direccion TEXT, "

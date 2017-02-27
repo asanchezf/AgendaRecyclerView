@@ -105,8 +105,11 @@ public class SQLControlador {
 
 	}
 
-	// Utilizando ContentValus
+	// Utilizando ContentValus. Es el método más recomendable
 	public void InsertContentAgenda(String Nombre, String Telefono, String Email) {
+
+
+		//db.insert(TABLA,NullColumBack,ContentValues)
 
 		ContentValues valores = new ContentValues();
 

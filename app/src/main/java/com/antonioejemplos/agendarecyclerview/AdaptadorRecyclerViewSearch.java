@@ -27,7 +27,7 @@ import Beans.Contactos;
  */
 public class AdaptadorRecyclerViewSearch extends RecyclerView.Adapter<AdaptadorRecyclerViewSearch.ContactosViewHolder> implements Filterable {
 
-     ArrayList<Contactos> items;//ArrayList de contactos sin filtrar
+    ArrayList<Contactos> items;//ArrayList de contactos sin filtrar
     private OnItemClickListener escucha;
     private final Context contexto;
 
@@ -135,6 +135,7 @@ public class AdaptadorRecyclerViewSearch extends RecyclerView.Adapter<AdaptadorR
         }
 
         private int obtenerIdContacto(int posicion) {
+
 
             return (int)items.get(posicion).get_id();
 

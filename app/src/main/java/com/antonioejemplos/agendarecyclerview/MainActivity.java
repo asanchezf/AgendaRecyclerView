@@ -9,8 +9,10 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -27,6 +29,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.sql.SQLException;
@@ -36,9 +39,10 @@ import java.util.Locale;
 import Beans.Contactos;
 import controlador.SQLControlador;
 
+import static android.R.attr.id;
 import static android.widget.SearchView.OnQueryTextListener;
 
-public class MainActivity extends AppCompatActivity implements AdaptadorRecyclerViewSearch.OnItemClickListener, OnQueryTextListener,SearchView.OnQueryTextListener,MenuItemCompat.OnActionExpandListener {
+public class MainActivity extends AppCompatActivity implements AdaptadorRecyclerViewSearch.OnItemClickListener, OnQueryTextListener, SearchView.OnQueryTextListener, MenuItemCompat.OnActionExpandListener {
 
 
     //CONSTANTES PARA EL MODO FORMULARIO Y PARA LOS TIPOS DE LLAMADA.============================
@@ -47,7 +51,8 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
     public static final int C_CREAR = 552;
     public static final int C_EDITAR = 553;
     public static final int C_ELIMINAR = 554;
-   // public static final int C_CALL = 555;
+    private static final int SOLICITUD_ACCESS_READ_CONTACTS = 1;//Para control de permisos en Android M o superior e importar contactos
+    private static final int SOLICITUD_ACCESS_CALL_PHONE = 2;//Para control de permisos en Android M o superior y poder realizar llamadas
     //FIN CONSTANTES==============================================================================
 
     private RecyclerView lista;
@@ -65,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
     private static int top = -1;
     private LinearLayoutManager llmanager;
     private SearchView searchView;
+    private int id_Contacto_Llamada=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,10 +117,9 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
     }
 
 
-
     @Override
     protected void onRestart() {
-    		/*
+            /*
     		 *  Indica que la actividad va a volver a ser representada despu�s de haber pasado por onStop().*/
 
         super.onRestart();
@@ -125,13 +130,15 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
     }
 
 
-   @Override
+    @Override
     protected void onResume() {
         super.onResume();
 
-       //Para preserver el scroll del listView
-       //Establecer variables en onCreate (), guardar posición en onPause () y ajuste la posición de desplazamiento desplazarse en onResume ()
-        if(index != -1) { llmanager.scrollToPositionWithOffset( index, top); }
+        //Para preserver el scroll del listView
+        //Establecer variables en onCreate (), guardar posición en onPause () y ajuste la posición de desplazamiento desplazarse en onResume ()
+        if (index != -1) {
+            llmanager.scrollToPositionWithOffset(index, top);
+        }
 
 
     }
@@ -154,16 +161,19 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         View v = lista.getChildAt(0);
         //top = (v == null) ? 0 : (v.getTop() - lista.getPaddingTop());
 
-        if(v == null){
-            top=0;
-        }
-        else{
-            top=v.getTop() - lista.getPaddingTop();
+        if (v == null) {
+            top = 0;
+        } else {
+            top = v.getTop() - lista.getPaddingTop();
         }
     }
 
     private void consultar() {
-
+        //ES EL PRIMER MÉTODO LLAMADO QUE ACCEDE A LA BB.DD DONDE SE ENCUENTRAN LOS REGISTROS.
+        //SI LA BB.DD NO EXISTE SE CREARÁ. SI YA EXISTE LA DEVUELVE SEGÚN EL MODO EN QUE LLAMEMOS: EXCRITURA O LECTURA.
+        //AL INSTALAR LA APP ES AQUÍ DONDE REALMENTE SE CREA PQ LA CLASE DBhelper QUE ES LA ENCARGADA DE CREAR LA BB.DD
+        //SE INSTANCIA DESDE LA CLASE SQLcontrolador DISTINGUIENDO SI LLAMA A ONCREATE O A ONUPGRADE.. PARA GESTIONAR LAS
+        //VERSIONES DE LA bb.dd.
 
         dbConnection = new SQLControlador(getApplicationContext());
         try {
@@ -213,12 +223,13 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
         lista.setAdapter(adaptadorBuscador);
 
+
         dbConnection.cerrar();
     }
 
 
     //Método que realiza la llamada telefónica.
-    public void call(long id, View view) throws SQLException {
+    public void call(long id) throws SQLException {
 
         dbConnection = new SQLControlador(getApplicationContext());
         dbConnection.abrirBaseDeDatos(1);// Lectura. Solo para ver
@@ -241,10 +252,10 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             //View v = null;
-            Snackbar snack = Snackbar.make(view, R.string.agenda_permiso_llamadas, Snackbar.LENGTH_LONG);
+          /*  Snackbar snack = Snackbar.make(view, R.string.agenda_permiso_llamadas, Snackbar.LENGTH_LONG);
             ViewGroup group = (ViewGroup) snack.getView();
             group.setBackgroundColor(getResources().getColor(R.color.md_deep_orange_700));
-            snack.show();
+            snack.show();*/
             return;
         }
         startActivity(intent);
@@ -253,9 +264,9 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
 
     @Override
-    public void onClick(RecyclerView.ViewHolder holder, final int idPromocion,final View view) {//idPromocion y View se definen como final pq son llamada desde la clase interna del evento onclick() del AlertDialog
+    public void onClick(RecyclerView.ViewHolder holder, final int idPromocion, final View view) {//idPromocion y View se definen como final pq son llamada desde la clase interna del evento onclick() del AlertDialog
  /*
-    * onClick es un método obligado a implementarse pq MainActivity implements AdaptadorRecyclerView3 que cuenta con la
+    * onClick es un método obligado a implementarse pq MainActivity implements AdaptadorRecyclerViewSearchView que cuenta con la
     * interface OnItemClickListener
     * */
         Log.i("Demo Recycler", "Se ha pulsado en la siguiente view: " + holder);
@@ -267,6 +278,15 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
         //Pulsando en en el btn de llamar se abre el dialer para llamar al contacto seleccionado
         else if (view.getId() == R.id.btncontactar) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                permisosPorAplicacion(idPromocion,2);
+                //solicitarPermisoLlamadas(idPromocion,view);
+                //Toast.makeText(view.getContext(),"Hola",Toast.LENGTH_LONG).show();
+                return;
+            }
+
+
             AlertDialog.Builder dialogEliminar = new AlertDialog.Builder(this);
 
             dialogEliminar.setIcon(android.R.drawable.ic_dialog_alert);
@@ -282,11 +302,11 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
                         public void onClick(DialogInterface dialog, int boton) {
 
-            try {
-                call(idPromocion,view);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+                            try {
+                                call(idPromocion);
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
 
                         }
                     });
@@ -320,9 +340,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
             }
 
 
-        }
-
-        else if (view.getId() == R.id.txtruta) {
+        } else if (view.getId() == R.id.txtruta) {
             //
             // Toast.makeText(MainActivity.this, "Se ha pulsado en ubicación: " + idPromocion + " " + holder, Toast.LENGTH_SHORT).show();
 
@@ -348,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
 
         //Pulsando en otra parte de los CardView distinta se abre la Activity para editar o eliminar el contacto
-        else{
+        else {
             //Toast.makeText(MainActivity.this, "Se ha pulsado en la celda: " + idPromocion + " " + holder, Toast.LENGTH_SHORT).show();
             try {
                 editar(idPromocion);
@@ -369,7 +387,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
         dbConnection.cerrar();
 
-        if(direccion.equals("")){
+        if (direccion.equals("")) {
 
             //Toast.makeText(MainActivity.this,"Este contacto no tiene ninguna dirección asignada..!",Toast.LENGTH_LONG).show();
 
@@ -379,19 +397,17 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
             snack.show();
 
 
-        }
-        else {
+        } else {
 
 
             //Si el GPS no está habilitado
-            LocationManager locManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+            LocationManager locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             if (!locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 Snackbar snack = Snackbar.make(lista, R.string.agenda_gps_no_activado, Snackbar.LENGTH_LONG);
                 ViewGroup group = (ViewGroup) snack.getView();
                 group.setBackgroundColor(getResources().getColor(R.color.md_deep_orange_500));
                 snack.show();
-            }
-            else {
+            } else {
                 //Uri.parse("google.navigation:q=an+Mestizaje, 2+Alcorcon"));
 
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
@@ -414,7 +430,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
         dbConnection.cerrar();
 
-        if(direccion.equals("")){
+        if (direccion.equals("")) {
 
             //Toast.makeText(MainActivity.this,"Este contacto no tiene ninguna dirección asignada..!",Toast.LENGTH_LONG).show();
 
@@ -423,11 +439,10 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
             group.setBackgroundColor(getResources().getColor(R.color.md_deep_orange_500));
             snack.show();
 
-        }
-        else {
+        } else {
 
             //Si el GPS no está habilitado
-            LocationManager locManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+            LocationManager locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             if (!locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 Snackbar snack = Snackbar.make(lista, R.string.agenda_gps_no_activado, Snackbar.LENGTH_LONG);
                 ViewGroup group = (ViewGroup) snack.getView();
@@ -459,14 +474,14 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
         Cursor c = dbConnection.CursorBuscarUno(id);// Devuelve un Cursor
 
-        int idenviado= c.getInt(c.getColumnIndex("_id"));
+        int idenviado = c.getInt(c.getColumnIndex("_id"));
         String nombre = c.getString(c.getColumnIndex("Nombre"));
         String apellidos = c.getString(c.getColumnIndex("Apellidos"));
         String direccion = c.getString(c.getColumnIndex("Direccion"));
         String telefono = c.getString(c.getColumnIndex("Telefono"));
         String email = c.getString(c.getColumnIndex("Email"));
 
-        int Id_Categ=c.getInt(c.getColumnIndex("Id_Categoria"));
+        int Id_Categ = c.getInt(c.getColumnIndex("Id_Categoria"));
         String observ = c.getString(c.getColumnIndex("Observaciones"));
 
 
@@ -490,9 +505,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
     }
 
 
-
-
-    public  void borrarTodos() {
+    public void borrarTodos() {
 		/*
 		 * Borramos todos los registros y refrescamos el recyclerView
 		 */
@@ -544,8 +557,6 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         //SE IMPLEMENTA EL MENÚ BUSCAR. Se añaden a la clase dos interfaces y se implmenta sus métodos más abajo...
 
 
-
-
         // MenuItem searchItem = menu.findItem(R.id.action_search);
         MenuItem searchItem = menu.findItem(R.id.buscar);
         //SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
@@ -583,9 +594,205 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         });*/
 
 
-
         return super.onCreateOptionsMenu(menu);
         //return true;
+    }
+
+    //1-Gestionamos los permisos según la versión. A partir de Android M algnos permisos catalogados como peligrosos se gestionan en tiempo de ejecución
+    private void permisosPorAplicacion(final int id,int idPermiso) {
+
+
+        switch (idPermiso) {
+
+            case 1://Acceso a los contactos
+            //Permisos para acceder a los Contactos
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                //1-La aplicación tiene permisos....
+
+                Intent i = new Intent(this, ImportarContactos.class);
+                startActivity(i);
+
+            } else {//No tiene permisos
+
+                //explicarUsoPermiso();
+                //solicitarPermiso();
+
+                solicitarPermisoImportContacts();
+            }
+                break;
+
+            case 2://Permiso para las llamadas
+            //Permiso para realizar llamadas
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                //1-La aplicación ya tiene permisos....
+                AlertDialog.Builder dialogEliminar = new AlertDialog.Builder(this);
+
+                dialogEliminar.setIcon(android.R.drawable.ic_dialog_alert);
+                dialogEliminar.setTitle(getResources().getString(
+                        R.string.agenda_call_titulo));
+                dialogEliminar.setMessage(getResources().getString(
+                        R.string.agenda_call_mensaje));
+                dialogEliminar.setCancelable(false);
+
+                dialogEliminar.setPositiveButton(
+                        getResources().getString(android.R.string.ok),
+                        new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int boton) {
+
+                                try {
+                                    call(id);
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        });
+
+                dialogEliminar.setNegativeButton(android.R.string.no, null);
+
+                dialogEliminar.show();
+
+
+            } else {//No tiene permisos
+
+                //explicarUsoPermiso();
+                //solicitarPermiso();
+                id_Contacto_Llamada=id;
+                solicitarPermisoLlamadas();
+            }
+
+                break;
+
+
+
+            default:
+                break;
+        }
+
+    }
+
+
+    private void solicitarPermisoLlamadas() {
+        //1-BREVE EXPLICACIÓN DE PARA QUÉ SE SOLICITAN LOS PERMISOS...
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.CALL_PHONE)) {
+            //4-Pequeña explicación de para qué queremos los permisos
+            CoordinatorLayout contenedor = (CoordinatorLayout) findViewById(R.id.contenedor);//Para el contexto del snackbar
+            Snackbar.make(contenedor, "La Aplicación no tiene permisos para realizar esta acción.", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[]{Manifest.permission.CALL_PHONE},
+                                    SOLICITUD_ACCESS_CALL_PHONE);
+                        }
+                    })
+                    .show();
+        } else {
+            //5-Se muetra cuadro de diálogo predeterminado del sistema para que concedamos o denegemos el permiso
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_CALL_LOG},
+                    SOLICITUD_ACCESS_CALL_PHONE);
+        }
+    }
+
+
+
+
+    //2-GESTIONAMOS LA CONCESIÓN O NO DE LOS PERMISOS Y LA EXPLICACIÓN PARA QUE TENGAN QUE CONCEDERSE:
+    private void solicitarPermisoImportContacts() {
+        //1-BREVE EXPLICACIÓN DE PARA QUÉ SE SOLICITAN LOS PERMISOS...
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.READ_CONTACTS)) {
+            //4-Pequeña explicación de para qué queremos los permisos
+            CoordinatorLayout contenedor = (CoordinatorLayout) findViewById(R.id.contenedor);//Para el contexto del snackbar
+            Snackbar.make(contenedor, "La Aplicación no tiene permisos para realizar esta acción.", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[]{Manifest.permission.READ_CONTACTS},
+                                    SOLICITUD_ACCESS_READ_CONTACTS);
+                        }
+                    })
+                    .show();
+        } else {
+            //5-Se muetra cuadro de diálogo predeterminado del sistema para que concedamos o denegemos el permiso
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_CALL_LOG},
+                    SOLICITUD_ACCESS_READ_CONTACTS);
+        }
+    }
+
+    //3-GESTIONAMOS EL RESULTADO DE LA ELECCIÓN DEL USUARIO EN LA CONCESIÓN DE PERMISOS...
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        //Si se preguntara por más permisos el resultado se gestionaría desde aquí.
+        if (requestCode == SOLICITUD_ACCESS_READ_CONTACTS) {//6-Se ha concedido los permisos... procedemos a ejecutar el proceso
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                Intent i = new Intent(this, ImportarContactos.class);
+                startActivity(i);
+
+            } else {//7-NO se han concedido los permisos. No se puede ejecutar el proceso. Se le informa de ello al usuario.
+
+                /*Snackbar.make(vista, "Sin el permiso, no puedo realizar la" +
+                        "acción", Snackbar.LENGTH_SHORT).show();*/
+                //1-Seguimos el proceso de ejecucion sin esta accion: Esto lo recomienda Google
+                //2-Cancelamos el proceso actual
+                //3-Salimos de la aplicacion
+                Toast.makeText(this, "No se han concedido los permisos necesarios para poder importar los contactos a la Aplicación.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        else if (requestCode == SOLICITUD_ACCESS_CALL_PHONE) {//6-Se ha concedido los permisos... procedemos a ejecutar el proceso
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                AlertDialog.Builder dialogEliminar = new AlertDialog.Builder(this);
+
+                dialogEliminar.setIcon(android.R.drawable.ic_dialog_alert);
+                dialogEliminar.setTitle(getResources().getString(
+                        R.string.agenda_call_titulo));
+                dialogEliminar.setMessage(getResources().getString(
+                        R.string.agenda_call_mensaje));
+                dialogEliminar.setCancelable(false);
+
+                dialogEliminar.setPositiveButton(
+                        getResources().getString(android.R.string.ok),
+                        new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int boton) {
+
+                                try {
+                                    call(id_Contacto_Llamada);
+
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                            }
+
+                            }
+                        });
+
+                dialogEliminar.setNegativeButton(android.R.string.no, null);
+
+                dialogEliminar.show();
+
+
+            } else {//7-NO se han concedido los permisos. No se puede ejecutar el proceso. Se le informa de ello al usuario.
+
+                /*Snackbar.make(vista, "Sin el permiso, no puedo realizar la" +
+                        "acción", Snackbar.LENGTH_SHORT).show();*/
+                //1-Seguimos el proceso de ejecucion sin esta accion: Esto lo recomienda Google
+                //2-Cancelamos el proceso actual
+                //3-Salimos de la aplicacion
+                Toast.makeText(this, "No se han concedido los permisos necesarios para poder realizar llamadas desde la Aplicación.", Toast.LENGTH_LONG).show();
+            }
+        }
+
+
     }
 
     @Override
@@ -597,10 +804,16 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
         if (id == R.id.menu_traer_contactos) {
             //MIGRAR DATOS DE LA AGENDA DE ANDROID=========================
-            Intent i = new Intent(this, ImportarContactos.class);
-            //startActivityForResult(i,C_CREAR);
-            startActivity(i);
+            //Intent i = new Intent(this, ImportarContactos.class);
+            //startActivity(i);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                permisosPorAplicacion(id,1);
+            }else {
 
+                Intent i = new Intent(this, ImportarContactos.class);
+                startActivity(i);
+
+            }
 
             return true;
         }
@@ -613,7 +826,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
         if (id == R.id.menu_borrar_algunos) {
             //finish();
-            Intent intent=new Intent(MainActivity.this,BorrarUsuarios.class);
+            Intent intent = new Intent(MainActivity.this, BorrarUsuarios.class);
             intent.putExtra(C_MODO, C_ELIMINAR);
             //startActivity(intent);
             startActivityForResult(intent, C_ELIMINAR);
@@ -627,11 +840,10 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
     }
 
 
-
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
 
-        switch(keyCode) {
+        switch (keyCode) {
             //Evitamos que funcione la tecla del menú que traen por defecto los samsung...
             case KeyEvent.KEYCODE_MENU:
                 // Toast.makeText(this, "Menú presionado",
@@ -667,11 +879,11 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         else
             Toast.makeText(getBaseContext(), R.string.agenda_salir, Toast.LENGTH_SHORT).show();
         back_pressed = System.currentTimeMillis();
-       // super.onBackPressed();
+        // super.onBackPressed();
     }
 
     /**
-     Para el buscador de la Toolbar
+     * Para el buscador de la Toolbar
      */
     @Override
     public boolean onQueryTextSubmit(String query) {
@@ -679,13 +891,13 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
     }
 
     /**
-     Para el buscador de la Toolbar
+     * Para el buscador de la Toolbar
      */
     @Override
     public boolean onQueryTextChange(String newText) {
 
         //Pasamos dos parámetros. Uno para el filtrado y otro para el cambio de color de letra
-        adaptadorBuscador.filter=newText;//Color de letra
+        adaptadorBuscador.filter = newText;//Color de letra
         adaptadorBuscador.getFilter().filter(newText);//filtrado
 
         //AdaptadorRecyclerView3.getFilter().filter(newTextt);

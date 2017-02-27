@@ -25,10 +25,10 @@
     <string name="menu_email">Enviar correo</string>
     <string name="menu_compartir">Compartir</string>
     <string name="menu_buscar">Buscar contacto</string>
-    <string name="menu_traer_contactos">Importar tu agenda de Android</string>
-    <string name="menu_borrar_todos">Borrar la agenda completa</string>
+    <string name="menu_traer_contactos">Importar tus Contactos de Android</string>
+    <string name="menu_borrar_todos">Borrar tu agenda completa</string>
     <string name="menu_ver_agenda">Mostrar la agenda</string>
-    <string name="menu_borrar_algunos">Borrar contactos</string>
+    <string name="menu_borrar_algunos">Borrar contactos de tu Agenda</string>
 
     <string name="usuarios_editar_titulo">Editar Contactos</string>
     <string name="usuarios_crear_titulo">Nuevo contacto</string>
@@ -72,7 +72,7 @@
     <string name="title_activity_importar_contactos">Importar Contactos de Android</string>
     <string name="confirm_import">Se ha finalizado la importación de los contactos guardados en Android</string>
 
-    <string name="aceptar_import">A continuación se va a proceder a importar todos los contactos que hubiera en su agenda de Android</string>
+    <string name="aceptar_import">A continuación se va a proceder a importar todos los contactos que hubiera en tu agenda de Android</string>
 
     <string name="titulo_activity_lista">CONTACTOS INCLUIDOS EN TU AGENDA</string>
 
