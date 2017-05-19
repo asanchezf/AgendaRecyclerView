@@ -284,11 +284,13 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
             //Si la Api es igual o superior a Android M gestionamos el control de permisos en ejecución...
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 permisosPorAplicacion(idPromocion, 2);
-                return;
+
+            }else{
+                llamar(idPromocion);
             }
 
 
-            llamar(idPromocion);
+
 
         }//Fin else if
 
@@ -613,7 +615,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         } else {
             //5-Se muetra cuadro de diálogo predeterminado del sistema para que concedamos o denegemos el permiso
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_CALL_LOG},
+                    new String[]{Manifest.permission.CALL_PHONE},
                     SOLICITUD_ACCESS_CALL_PHONE);
         }
     }
@@ -639,7 +641,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         } else {
             //5-Se muetra cuadro de diálogo predeterminado del sistema para que concedamos o denegemos el permiso
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_CALL_LOG},
+                    new String[]{Manifest.permission.READ_CONTACTS},
                     SOLICITUD_ACCESS_READ_CONTACTS);
         }
     }
@@ -656,7 +658,9 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
                 Intent i = new Intent(this, ImportarContactos.class);
                 startActivity(i);
 
-            } else {//7-NO se han concedido los permisos. No se puede ejecutar el proceso. Se le informa de ello al usuario.
+            }
+
+            else {//7-NO se han concedido los permisos. No se puede ejecutar el proceso. Se le informa de ello al usuario.
 
                 /*Snackbar.make(vista, "Sin el permiso, no puedo realizar la" +
                         "acción", Snackbar.LENGTH_SHORT).show();*/
@@ -665,6 +669,9 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
                 //3-Salimos de la aplicacion
                 Toast.makeText(this, "No se han concedido los permisos necesarios para poder importar los contactos a la Aplicación.", Toast.LENGTH_SHORT).show();
             }
+
+
+
         } else if (requestCode == SOLICITUD_ACCESS_CALL_PHONE) {//6-Se ha concedido los permisos... procedemos a ejecutar el proceso
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
