@@ -38,8 +38,10 @@ import java.util.Locale;
 
 import Beans.Contactos;
 import controlador.SQLControlador;
+import util.ImportarContactos2;
 
 import static android.R.attr.id;
+import static android.R.attr.nextFocusRight;
 import static android.widget.SearchView.OnQueryTextListener;
 
 public class MainActivity extends AppCompatActivity implements AdaptadorRecyclerViewSearch.OnItemClickListener, OnQueryTextListener, SearchView.OnQueryTextListener, MenuItemCompat.OnActionExpandListener {
@@ -92,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         llmanager = new LinearLayoutManager(this);
         llmanager.setOrientation(LinearLayoutManager.VERTICAL);
 
-
+        //Se hace aquí para preserver el scroll del RecyclerView
         consultar();
 
         //Floating Action Button
@@ -112,29 +114,28 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
     }
 
 
-    @Override
-    protected void onRestart() {
-            /*
-             *  Indica que la actividad va a volver a ser representada despu�s de haber pasado por onStop().*/
 
-        super.onRestart();
-        //Toast.makeText(this, "onRestart", Toast.LENGTH_SHORT).show();
-
-        consultar();
-
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        //Para preserver el scroll del listView
+
+
+        //Para preserver el scroll del RecyclerView
         //Establecer variables en onCreate (), guardar posición en onPause () y ajuste la posición de desplazamiento desplazarse en onResume ()
         if (index != -1) {
             llmanager.scrollToPositionWithOffset(index, top);
         }
 
+    //consultar();
 
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        consultar();//Para que refresque el borrado de algunos...
     }
 
     @Override
@@ -160,6 +161,8 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         } else {
             top = v.getTop() - lista.getPaddingTop();
         }
+
+
     }
 
     private void consultar() {
@@ -168,6 +171,9 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         //AL INSTALAR LA APP ES AQUÍ DONDE REALMENTE SE CREA PQ LA CLASE DBhelper QUE ES LA ENCARGADA DE CREAR LA BB.DD
         //SE INSTANCIA DESDE LA CLASE SQLcontrolador DISTINGUIENDO SI LLAMA A ONCREATE O A ONUPGRADE.. PARA GESTIONAR LAS
         //VERSIONES DE LA bb.dd.
+
+        contactos=new ArrayList<Contactos>();
+
 
         dbConnection = new SQLControlador(getApplicationContext());
         try {
@@ -178,45 +184,14 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         }// Lectura. Solo para ver
 
 
-        contactos = dbConnection.BuscarTodos();// llamamos a BuscarTodos() que devuelve un arraylist de contactos...
+        contactos = dbConnection.BuscarTodos();// llamamos a BuscarTodos() que devuelve un arraylist de contactos...+
 
 
         //adaptador = new AdaptadorRecyclerView3(contactos, this, this);//IMplementa el adapatador: pasamos ahora tres parámetros....
         adaptadorBuscador = new AdaptadorRecyclerViewSearch(contactos, this, this);//IMplementa el adapatador: pasamos ahora tres parámetros....
 
-        /*lista.setAdapter(adaptador);
-        adaptador.notifyDataSetChanged();*/
-
-        //DECORACIÓN Y ANIMACIÓN DEL RECYCLERVIEWw. Se define en una clase aparte...
-
-        /*lista.addItemDecoration(
-                new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
-        lista.setItemAnimator(new DefaultItemAnimator());*/
-
-
-        //int total=contactos.size();
-
-        //lista.setAdapter( new ContactosAdapter_Imagenes(this,contactos));
-
-        //concatena_numero_registros=getResources().getString(R.string.concatenar_numero_registros);//DEvuelve HAY para concatenar y  mostrar el número total de registros...
-        //totalRegistros=  contactosAdapter_imagenes.getCount();
-        //adaptador.getItemCount();
-
-        //totales= String.valueOf(totalRegistros);
-
-
-//        if(totalRegistros>0) {
-//            txtTotales.setText(concatena_numero_registros+ " " + totales + " " + getResources().getString(R.string.titulo_activity_lista));
-//        }
-//
-//        else{
-//            txtTotales.setText(getResources().getString(R.string.no_hay_registros));
-//        }
-
-        //lista.setAdapter(contactosAdapter_imagenes);
-
         lista.setAdapter(adaptadorBuscador);
-
+        adaptadorBuscador.notifyDataSetChanged();
 
         dbConnection.cerrar();
     }
@@ -562,8 +537,20 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                     //1-La aplicación tiene permisos....
 
-                    Intent i = new Intent(this, ImportarContactos.class);
-                    startActivity(i);
+                    /*Intent i = new Intent(this, ImportarContactos.class);
+                    startActivity(i);*/
+
+                   /* ArrayList<Contactos> contactosDevueltos=new ArrayList<>();
+                    ImportarContactos2 importarContactos2=new ImportarContactos2(MainActivity.this);
+                    contactosDevueltos=importarContactos2.devuelveContactos();
+                     AdaptadorRecyclerViewSearch adaptadorBuscador2;
+                    adaptadorBuscador2=new AdaptadorRecyclerViewSearch(contactosDevueltos, this, this);
+                    lista.setAdapter(adaptadorBuscador2);
+                    adaptadorBuscador2.notifyDataSetChanged();*/
+
+                    ImportarContactos2 importarContactos2=new ImportarContactos2(MainActivity.this);
+
+                    consultar();
 
                 } else {//No tiene permisos
 
@@ -655,9 +642,12 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         if (requestCode == SOLICITUD_ACCESS_READ_CONTACTS) {//6-Se ha concedido los permisos... procedemos a ejecutar el proceso
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                Intent i = new Intent(this, ImportarContactos.class);
-                startActivity(i);
+                /*Intent i = new Intent(this, ImportarContactos.class);
+                startActivity(i);*/
 
+                ImportarContactos2 importarContactos2=new ImportarContactos2(MainActivity.this);
+                //adaptadorBuscador.notifyDataSetChanged();
+                consultar();
             }
 
             else {//7-NO se han concedido los permisos. No se puede ejecutar el proceso. Se le informa de ello al usuario.
@@ -705,10 +695,36 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
             //startActivity(i);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 permisosPorAplicacion(id, 1);
-            } else {
+            } else
+                {
 
-                Intent i = new Intent(this, ImportarContactos.class);
-                startActivity(i);
+                /*Intent i = new Intent(this, ImportarContactos.class);
+                startActivity(i);*/
+
+
+                /*    ArrayList<Contactos> contactosDevueltos=new ArrayList<>();
+                    ImportarContactos2 importarContactos2=new ImportarContactos2(MainActivity.this);
+                    contactosDevueltos=importarContactos2.devuelveContactos();
+                    AdaptadorRecyclerViewSearch adaptadorBuscador2;
+                    adaptadorBuscador2=new AdaptadorRecyclerViewSearch(contactosDevueltos, this, this);
+                    lista.setAdapter(adaptadorBuscador2);
+                    adaptadorBuscador2.notifyDataSetChanged();*/
+
+
+                ImportarContactos2 importarContactos2=new ImportarContactos2(this);
+                    //lista.invalidate();
+                    //adaptadorBuscador.notifyItemRangeChanged(0, contactos.size());
+                    //contactos.clear();
+                    consultar();
+
+
+
+
+                    //lista.notify();
+                    //adaptadorBuscador.notify();
+                //consultar();
+
+                    //adaptadorBuscador.notifyDataSetChanged();
 
             }
 
@@ -718,6 +734,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         if (id == R.id.menu_borrar_todos) {
 
             borrarTodos();
+
             return true;
         }
 
@@ -727,7 +744,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
             intent.putExtra(C_MODO, C_ELIMINAR);
             //startActivity(intent);
             startActivityForResult(intent, C_ELIMINAR);
-
+            //consultar();
 
             return true;
         }
