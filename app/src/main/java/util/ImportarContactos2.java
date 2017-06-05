@@ -42,14 +42,47 @@ public class ImportarContactos2 {
 
     public ImportarContactos2(Context contexto) {
         micontexto = contexto;
-        gestionaImportar();
+        gestionaImportar2();
     }
+
+
 
     public ArrayList<Contactos>  devuelveContactos(){
 
 
 
         return arrayListcontactos;
+    }
+
+
+    private void gestionaImportar2() {
+
+
+        new Thread(new Runnable() {
+            public void run() {
+
+                // ---hacer alg�n trabajo aqu�---
+                importar();
+
+                // ---ocultar la barra de progreso---
+                manejador.post(new Runnable() {
+                    public void run() {
+                        // ---0 - VISIBLE; 4 - INVISIBLE; 8 - GONE---
+                        //barraProgreso.setVisibility(8);
+                        //barraProgreso.setVisibility(View.INVISIBLE);
+                        //txt.setVisibility(View.VISIBLE);
+                        //txtconfirm.setVisibility(View.VISIBLE);
+
+                    }
+                });
+            }
+
+
+        }).start();
+
+
+
+
     }
 
     private void gestionaImportar() {
@@ -545,7 +578,7 @@ public class ImportarContactos2 {
 
             Connection.ImportCollectionContactsContent(arrayListcontactos,fecha);
 
-
+            //Connection.cerrar();
 
 
         } catch (SQLException e) {

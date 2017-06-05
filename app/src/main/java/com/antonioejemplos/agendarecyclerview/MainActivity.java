@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
     public static final int C_ELIMINAR = 554;
     private static final int SOLICITUD_ACCESS_READ_CONTACTS = 1;//Para control de permisos en Android M o superior e importar contactos
     private static final int SOLICITUD_ACCESS_CALL_PHONE = 2;//Para control de permisos en Android M o superior y poder realizar llamadas
+
     //FIN CONSTANTES==============================================================================
 
     private RecyclerView lista;
@@ -73,6 +74,15 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
     private LinearLayoutManager llmanager;
     private SearchView searchView;
     private int id_Contacto_Llamada = 0;//Para llamar a los contactos de la agenda.
+
+
+
+   protected void onPostExecute() {
+
+        Log.i("TAG", "Size : " + contactos.size());
+        //progressBar.setVisibility(View.GONE);
+        adaptadorBuscador.notifyDataSetChanged();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,12 +124,9 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
     }
 
 
-
-
     @Override
     protected void onResume() {
         super.onResume();
-
 
 
         //Para preserver el scroll del RecyclerView
@@ -128,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
             llmanager.scrollToPositionWithOffset(index, top);
         }
 
-    //consultar();
+        //consultar();
 
     }
 
@@ -163,6 +170,8 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         }
 
 
+        consultar();
+
     }
 
     private void consultar() {
@@ -172,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         //SE INSTANCIA DESDE LA CLASE SQLcontrolador DISTINGUIENDO SI LLAMA A ONCREATE O A ONUPGRADE.. PARA GESTIONAR LAS
         //VERSIONES DE LA bb.dd.
 
-        contactos=new ArrayList<Contactos>();
+        //contactos=new ArrayList<Contactos>();
 
 
         dbConnection = new SQLControlador(getApplicationContext());
@@ -194,7 +203,44 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         adaptadorBuscador.notifyDataSetChanged();
 
         dbConnection.cerrar();
+        onPostExecute();
+
     }
+
+
+    private void consultar2() {
+        //ES EL PRIMER MÉTODO LLAMADO QUE ACCEDE A LA BB.DD DONDE SE ENCUENTRAN LOS REGISTROS.
+        //SI LA BB.DD NO EXISTE SE CREARÁ. SI YA EXISTE LA DEVUELVE SEGÚN EL MODO EN QUE LLAMEMOS: EXCRITURA O LECTURA.
+        //AL INSTALAR LA APP ES AQUÍ DONDE REALMENTE SE CREA PQ LA CLASE DBhelper QUE ES LA ENCARGADA DE CREAR LA BB.DD
+        //SE INSTANCIA DESDE LA CLASE SQLcontrolador DISTINGUIENDO SI LLAMA A ONCREATE O A ONUPGRADE.. PARA GESTIONAR LAS
+        //VERSIONES DE LA bb.dd.
+
+        ArrayList<Contactos> contactos2;
+
+        //contactos2=new ArrayList<Contactos>();
+
+        //SQLControlador dbConnection;
+        dbConnection = new SQLControlador(MainActivity.this);
+        try {
+            dbConnection.abrirBaseDeDatos(1);//Modo lectura
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }// Lectura. Solo para ver
+
+
+        contactos2 = dbConnection.BuscarTodos();// llamamos a BuscarTodos() que devuelve un arraylist de contactos...
+        AdaptadorRecyclerViewSearch adaptadorBuscador2;
+
+        //adaptador = new AdaptadorRecyclerView3(contactos, this, this);//IMplementa el adapatador: pasamos ahora tres parámetros....
+        adaptadorBuscador2 = new AdaptadorRecyclerViewSearch(contactos2, this, this);//IMplementa el adapatador: pasamos ahora tres parámetros....
+
+        lista.setAdapter(adaptadorBuscador2);
+        adaptadorBuscador2.notifyDataSetChanged();
+
+        //dbConnection.cerrar();
+    }
+
 
     //Método que realiza la gestión de la llamada telefónica
     private void llamar(final long id) {
@@ -260,11 +306,9 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 permisosPorAplicacion(idPromocion, 2);
 
-            }else{
+            } else {
                 llamar(idPromocion);
             }
-
-
 
 
         }//Fin else if
@@ -434,7 +478,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
 
     public void borrarTodos() {
-		/*
+        /*
 		 * Borramos todos los registros y refrescamos el recyclerView
 		 */
         AlertDialog.Builder dialogEliminar = new AlertDialog.Builder(this);
@@ -548,7 +592,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
                     lista.setAdapter(adaptadorBuscador2);
                     adaptadorBuscador2.notifyDataSetChanged();*/
 
-                    ImportarContactos2 importarContactos2=new ImportarContactos2(MainActivity.this);
+                    ImportarContactos2 importarContactos2 = new ImportarContactos2(MainActivity.this);
 
                     consultar();
 
@@ -645,12 +689,10 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
                 /*Intent i = new Intent(this, ImportarContactos.class);
                 startActivity(i);*/
 
-                ImportarContactos2 importarContactos2=new ImportarContactos2(MainActivity.this);
+                ImportarContactos2 importarContactos2 = new ImportarContactos2(MainActivity.this);
                 //adaptadorBuscador.notifyDataSetChanged();
                 consultar();
-            }
-
-            else {//7-NO se han concedido los permisos. No se puede ejecutar el proceso. Se le informa de ello al usuario.
+            } else {//7-NO se han concedido los permisos. No se puede ejecutar el proceso. Se le informa de ello al usuario.
 
                 /*Snackbar.make(vista, "Sin el permiso, no puedo realizar la" +
                         "acción", Snackbar.LENGTH_SHORT).show();*/
@@ -659,7 +701,6 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
                 //3-Salimos de la aplicacion
                 Toast.makeText(this, "No se han concedido los permisos necesarios para poder importar los contactos a la Aplicación.", Toast.LENGTH_SHORT).show();
             }
-
 
 
         } else if (requestCode == SOLICITUD_ACCESS_CALL_PHONE) {//6-Se ha concedido los permisos... procedemos a ejecutar el proceso
@@ -687,6 +728,8 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
+
         int id = item.getItemId();
 
         if (id == R.id.menu_traer_contactos) {
@@ -695,8 +738,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
             //startActivity(i);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 permisosPorAplicacion(id, 1);
-            } else
-                {
+            } else {
 
                 /*Intent i = new Intent(this, ImportarContactos.class);
                 startActivity(i);*/
@@ -711,24 +753,38 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
                     adaptadorBuscador2.notifyDataSetChanged();*/
 
 
-                ImportarContactos2 importarContactos2=new ImportarContactos2(this);
+            /*    ImportarContactos2 importarContactos2=new ImportarContactos2(this);
                     //lista.invalidate();
                     //adaptadorBuscador.notifyItemRangeChanged(0, contactos.size());
                     //contactos.clear();
-                    consultar();
+
+                    Toast.makeText(MainActivity.this,
+                            "Elementos importados",
+                            Toast.LENGTH_SHORT).show();
+                    dbConnection.cerrar();
+                    consultar2();*/
 
 
+                //gestionaImportar();
+                ImportarContactos2 importarContactos2 = new ImportarContactos2(this);
+                Toast.makeText(MainActivity.this,
+                        "Elementos importados",
+                        Toast.LENGTH_SHORT).show();
+                dbConnection.cerrar();
+                //consultar2();
+                consultar();
 
 
-                    //lista.notify();
-                    //adaptadorBuscador.notify();
+                //lista.notify();
+                //adaptadorBuscador.notify();
                 //consultar();
 
-                    //adaptadorBuscador.notifyDataSetChanged();
+                //adaptadorBuscador.notifyDataSetChanged();
 
             }
 
-            return true;
+            //return true;
+
         }
 
         if (id == R.id.menu_borrar_todos) {
