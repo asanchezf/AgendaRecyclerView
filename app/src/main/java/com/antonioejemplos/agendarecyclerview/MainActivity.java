@@ -789,12 +789,13 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
                 //gestionaImportar();
                 ImportarContactos2 importarContactos2 = new ImportarContactos2(this);
+                dbConnection.cerrar();
                 Toast.makeText(MainActivity.this,
                         "Elementos importados",
                         Toast.LENGTH_SHORT).show();
-                dbConnection.cerrar();
-                //consultar2();
-                consultar();
+
+                consultar2();
+                //consultar();
 
 
                 //lista.notify();
