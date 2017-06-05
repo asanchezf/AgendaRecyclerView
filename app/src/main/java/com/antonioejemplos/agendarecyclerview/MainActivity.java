@@ -77,12 +77,8 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
 
 
-   protected void onPostExecute() {
 
-        Log.i("TAG", "Size : " + contactos.size());
-        //progressBar.setVisibility(View.GONE);
-        adaptadorBuscador.notifyDataSetChanged();
-    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,8 +100,34 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         llmanager = new LinearLayoutManager(this);
         llmanager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        //Se hace aquí para preserver el scroll del RecyclerView
-        consultar();
+
+
+
+        contactos=new ArrayList<Contactos>();
+
+
+        dbConnection = new SQLControlador(getApplicationContext());
+        try {
+            dbConnection.abrirBaseDeDatos(1);//Modo lectura
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }// Lectura. Solo para ver
+
+
+        contactos = dbConnection.BuscarTodos();// llamamos a BuscarTodos() que devuelve un arraylist de contactos...+
+
+
+        //adaptador = new AdaptadorRecyclerView3(contactos, this, this);//IMplementa el adapatador: pasamos ahora tres parámetros....
+        adaptadorBuscador = new AdaptadorRecyclerViewSearch(contactos, this, this);//IMplementa el adapatador: pasamos ahora tres parámetros....
+
+        lista.setAdapter(adaptadorBuscador);
+        adaptadorBuscador.notifyDataSetChanged();
+
+        dbConnection.cerrar();
+
+
+
 
         //Floating Action Button
         btnFab = (FloatingActionButton) findViewById(R.id.btnFab);
@@ -203,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
         adaptadorBuscador.notifyDataSetChanged();
 
         dbConnection.cerrar();
-        onPostExecute();
+
 
     }
 
