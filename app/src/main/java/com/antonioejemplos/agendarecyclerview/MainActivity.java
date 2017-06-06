@@ -1,6 +1,7 @@
 package com.antonioejemplos.agendarecyclerview;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,7 +30,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.sql.SQLException;
@@ -40,8 +40,6 @@ import Beans.Contactos;
 import controlador.SQLControlador;
 import util.ImportarContactos2;
 
-import static android.R.attr.id;
-import static android.R.attr.nextFocusRight;
 import static android.widget.SearchView.OnQueryTextListener;
 
 public class MainActivity extends AppCompatActivity implements AdaptadorRecyclerViewSearch.OnItemClickListener, OnQueryTextListener, SearchView.OnQueryTextListener, MenuItemCompat.OnActionExpandListener {
@@ -75,7 +73,15 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
     private SearchView searchView;
     private int id_Contacto_Llamada = 0;//Para llamar a los contactos de la agenda.
 
-
+    //reinicia una Activity
+    public static void reiniciarActivity(Activity actividad){
+        Intent intent=new Intent();
+        intent.setClass(actividad, actividad.getClass());
+        //llamamos a la actividad
+        actividad.startActivity(intent);
+        //finalizamos la actividad actual
+        actividad.finish();
+    }
 
 
 
@@ -94,16 +100,16 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
 
         // Configuración del RecyclerView-----------------------------
         lista = (RecyclerView) findViewById(R.id.lstLista);
+
         lista.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));//Layout para el RecyclerView
 
         lista.setItemAnimator(new DefaultItemAnimator());//Animación por defecto....
         llmanager = new LinearLayoutManager(this);
         llmanager.setOrientation(LinearLayoutManager.VERTICAL);
 
+        contactos=new ArrayList<>();
 
 
-
-        contactos=new ArrayList<Contactos>();
 
 
         dbConnection = new SQLControlador(getApplicationContext());
@@ -787,6 +793,7 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
                     consultar2();*/
 
 
+
                 //gestionaImportar();
                 ImportarContactos2 importarContactos2 = new ImportarContactos2(this);
                 dbConnection.cerrar();
@@ -794,9 +801,9 @@ public class MainActivity extends AppCompatActivity implements AdaptadorRecycler
                         "Elementos importados",
                         Toast.LENGTH_SHORT).show();
 
-                consultar2();
+                //consultar2();
                 //consultar();
-
+                reiniciarActivity(this);
 
                 //lista.notify();
                 //adaptadorBuscador.notify();
